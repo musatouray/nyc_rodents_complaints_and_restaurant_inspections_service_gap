@@ -1,0 +1,2 @@
+# NYC Queens College Databricks Hackathon
+An NYC open data challenge about rodent complaints and restaurant health violations filed with 311 from Jan 2025 to present. Does the health department show up when someone calls for help?
