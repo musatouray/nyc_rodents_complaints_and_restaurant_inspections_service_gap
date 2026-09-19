@@ -1,0 +1,6 @@
+#### recipient — Setup in their Databricks workspace:
+
+- SHOW PROVIDERS; — to see you as a provider
+- SHOW SHARES IN PROVIDER <provider_name>; — to see hackathon_share
+- CREATE CATALOG hackathon_data USING SHARE <provider_name>.hackathon_share; — to mount the share
+- SELECT * FROM hackathon_data.01_bronze.rat_sightings_bronze; — to query the data
