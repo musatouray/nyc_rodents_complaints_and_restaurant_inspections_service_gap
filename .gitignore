@@ -1,2 +1,2 @@
-# Genie space files (managed via Databricks UI, not git)
-03_genie/
+# Genie space config files (managed via Databricks UI, not git)
+*.geniespace.json
