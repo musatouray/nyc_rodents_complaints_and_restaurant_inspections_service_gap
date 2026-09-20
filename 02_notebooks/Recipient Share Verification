@@ -1,4 +1,60 @@
-#### recipient — Setup in their Databricks workspace:
+#### Recipient-Side Setup Instructions
+
+**For Mitchell (powerbitrainer@gmail.com) — run these in YOUR Databricks workspace.**
+
+##### Step 1: Assign yourself as metastore admin (REQUIRED)
+
+Being the account owner / account admin is **not** the same as being a metastore admin.
+On auto-provisioned accounts (like free trials), the metastore is created without a metastore admin.
+
+1. Go to https://accounts.cloud.databricks.com
+2. Navigate to **Catalog → Metastores**
+3. Click your metastore to open its properties
+4. Under **Metastore Admin**, click **Edit**
+5. Add `powerbitrainer@gmail.com`
+6. Click **Save**
+7. Wait ~30 seconds for it to take effect
+
+##### Step 2: Grant yourself USE_PROVIDER on the metastore
+
+```sql
+GRANT USE_PROVIDER ON METASTORE TO `powerbitrainer@gmail.com`;
+```
+
+> **Alternative (UI):** Catalog → click the gear icon → Metastore → Permissions tab → Grant → USE_PROVIDER to your user.
+
+##### Step 3: List the shares from the provider
+
+```sql
+SHOW SHARES IN PROVIDER amigomusa;
+-- Expected result: hackathon_share
+```
+
+##### Step 4: Mount the share as a catalog
+
+```sql
+CREATE CATALOG nyc_rats_shared USING SHARE amigomusa.hackathon_share;
+```
+
+## Step 5: Query the shared tables
+
+```sql
+SELECT * FROM nyc_rats_shared.01_bronze.rat_sightings_bronze LIMIT 10;
+SELECT * FROM nyc_rats_shared.01_bronze.restaurant_inspections_bronze LIMIT 10;
+```
+
+##### Troubleshooting
+
+- **`PERMISSION_DENIED: User is not an owner of Provider`** → You are not a metastore admin. Complete Step 1 first, then retry.
+- **`Provider not found`** → The D2D connection may not have been established. Verify your metastore's global ID matches what was used to register the recipient:
+  ```sql
+  SELECT global_metastore_id FROM system.information_schema.metastores;
+  ```
+  This should return `aws:us-east-2:6b858d3f-dcab-47d0-a996-549079d603d9`.
+- **`CREATE CATALOG` permission denied** → Grant yourself the privilege:
+  ```sql
+  GRANT CREATE CATALOG ON METASTORE TO `recipient email`;
+  ```##### recipient — Setup in their Databricks workspace:
 
 - SHOW PROVIDERS; — to see you as a provider
 - SHOW SHARES IN PROVIDER <provider_name>; — to see hackathon_share
